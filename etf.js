@@ -2,15 +2,11 @@ import { getOpeningPrice, getClosingPrice } from './helpers.js'
 import fs from 'node:fs/promises'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
-import yahooFinance from 'yahoo-finance2'
+import STOCKS_TO_CHECK, { YEAR } from './etfs.js'
 
 // https://stackoverflow.com/questions/64383909/dirname-is-not-defined-error-in-node-14-version
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-
-const YEAR = 2023
-
-const STOCKS_TO_CHECK = ['NAS.OL', 'ARKF', 'ARKK']
 
 const openingPrices = await Promise.all(
     STOCKS_TO_CHECK.map(async (stock) => await getOpeningPrice(stock, YEAR))
