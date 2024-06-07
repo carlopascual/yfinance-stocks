@@ -19,3 +19,9 @@ export const getOpeningPrice = async (ticker, year) => {
 
     return result[0].open
 }
+
+export const getProperty = async (ticker, property) => {
+    const result = await yahooFinance.quote(ticker, { fields: [property] })
+
+    return result[property]
+}
