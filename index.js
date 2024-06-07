@@ -1,4 +1,4 @@
-import yahooFinance from 'yahoo-finance2'
+import { getClosingPrice } from './helpers.js'
 import fs from 'node:fs/promises'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
@@ -7,16 +7,8 @@ import { dirname } from 'path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+const YEAR = 2023
 const STOCKS_TO_CHECK = ['MSFT', 'AAPL']
-
-const getClosingPrice = async (ticker) => {
-    const result = await yahooFinance.historical(ticker, {
-        period1: '2023-12-28',
-        period2: '2023-12-31',
-    })
-
-    return result[result.length - 1].close
-}
 
 const prepareFile = (prices) => {
     let keys = ''
@@ -34,7 +26,9 @@ const prepareFile = (prices) => {
 }
 
 const closingPrices = (
-    await Promise.all(STOCKS_TO_CHECK.map(getClosingPrice))
+    await Promise.all(
+        STOCKS_TO_CHECK.map(async (stock) => await getClosingPrice(stock, YEAR))
+    )
 ).reduce((prev, curr, index) => {
     prev[STOCKS_TO_CHECK[index]] = curr
 
